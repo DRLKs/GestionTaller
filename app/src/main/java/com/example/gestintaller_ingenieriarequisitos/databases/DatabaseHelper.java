@@ -1,5 +1,7 @@
 package com.example.gestintaller_ingenieriarequisitos.databases;
 
+import static com.example.gestintaller_ingenieriarequisitos.utils.Constants.*;
+
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -12,7 +14,7 @@ import java.io.InputStreamReader;
 public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "mecanica.db";
     private static final int DATABASE_VERSION = 1;
-    private Context context;
+    private final Context context;
 
 
     // Tablas
@@ -20,27 +22,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String TABLE_PIEZAS = "tPiezas";
     public static final String TABLE_TIPOS = "tTipoPieza";
 
-    // Creación de tablas
-    private static final String CREATE_TABLE_USUARIO =
-            "CREATE TABLE " + TABLE_USUARIO + " (" +
-                    "nombre TEXT PRIMARY KEY, " +
-                    "password TEXT, " +
-                    "rolName TEXT);";
-
-    private static final String CREATE_TABLE_PIEZAS =
-            "CREATE TABLE " + TABLE_PIEZAS + " (" +
-                    "ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                    "NOMBRE TEXT, " +
-                    "FABRICANTE TEXT, " +
-                    "ID_TIPO TEXT);";
-
-    private static final String CREATE_TABLE_TIPOS =
-            "CREATE TABLE " + TABLE_TIPOS + " (" +
-                    "ID_TIPO TEXT PRIMARY KEY, " +
-                    "NOMBRE TEXT);";
-
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        this.context = context;
     }
 
     /*
@@ -48,7 +32,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     */
     @Override
     public void onCreate(SQLiteDatabase db) {
-        ejecutarSQLDesdeArchivo(db, context, "init_data.sql");
+        ejecutarSQLDesdeArchivo(db, context);
     }
 
     @Override
@@ -59,9 +43,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    private void ejecutarSQLDesdeArchivo(SQLiteDatabase db, Context context, String archivo) {
+    private void ejecutarSQLDesdeArchivo(SQLiteDatabase db, Context context) {
         try {
-            InputStream input = context.getAssets().open(archivo);
+            InputStream input = context.getAssets().open(ARCHIVO_INICIALIZACION_SQL);
             BufferedReader reader = new BufferedReader(new InputStreamReader(input));
             StringBuilder sb = new StringBuilder();
             String linea;

@@ -9,6 +9,8 @@ import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.gestintaller_ingenieriarequisitos.databases.DatabaseHelper;
+
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
 
@@ -18,8 +20,10 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         // Instanciar la base de datos
-        DatabaseHelper dbHelper = new DatabaseHelper(this);
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        SQLiteDatabase db;
+        try (DatabaseHelper dbHelper = new DatabaseHelper(this)) {
+            db = dbHelper.getReadableDatabase();
+        }
 
         // Botón para probar la conexión y consultar datos iniciales
         Button btnTestDatabase = findViewById(R.id.btnTestDatabase);

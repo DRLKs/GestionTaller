@@ -12,7 +12,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
-    private static final String DATABASE_NAME = "mecanica.db";
+
     private static final int DATABASE_VERSION = 1;
     private final Context context;
 

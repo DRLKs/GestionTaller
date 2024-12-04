@@ -1,48 +1,45 @@
-package com.example.gestintaller_ingenieriarequisitos;
+package com.example.gestintaller_ingenieriarequisitos
 
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
-import android.widget.Button;
+import android.os.Bundle
+import android.widget.TextView
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
+import com.example.gestintaller_ingenieriarequisitos.ui.theme.GestiónTallerIngenieriaRequisitosTheme
 
-import androidx.appcompat.app.AppCompatActivity;
+class MainActivity : AppCompatActivity() {
 
-import com.example.gestintaller_ingenieriarequisitos.databases.DatabaseHelper;
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
 
-public class MainActivity extends AppCompatActivity {
-    private static final String TAG = "MainActivity";
+        // Referencia al TextView para mostrar un mensaje de bienvenida
+        val welcomeMessage: TextView = findViewById(R.id.welcomeMessage)
+        welcomeMessage.text = "¡Bienvenido a la interfaz principal!"
+    }
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+}
 
-        // Instanciar la base de datos
-        SQLiteDatabase db;
-        try (DatabaseHelper dbHelper = new DatabaseHelper(this)) {
-            db = dbHelper.getReadableDatabase();
-        }
+@Composable
+fun Greeting(name: String, modifier: Modifier = Modifier) {
+    Text(
+        text = "Hello $name!",
+        modifier = modifier
+    )
+}
 
-        // Botón para probar la conexión y consultar datos iniciales
-        Button btnTestDatabase = findViewById(R.id.btnTestDatabase);
-        btnTestDatabase.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Probar lectura de datos iniciales
-                Cursor cursor = db.rawQuery("SELECT * FROM tUsuario", null);
-                if (cursor.moveToFirst()) {
-                    do {
-                        String nombre = cursor.getString(cursor.getColumnIndexOrThrow("nombre"));
-                        String rol = cursor.getString(cursor.getColumnIndexOrThrow("rolName"));
-                        Log.d(TAG, "Usuario: " + nombre + " - Rol: " + rol);
-                    } while (cursor.moveToNext());
-                } else {
-                    Log.d(TAG, "No se encontraron usuarios en la base de datos.");
-                }
-                cursor.close();
-            }
-        });
+@Preview(showBackground = true)
+@Composable
+fun GreetingPreview() {
+    GestiónTallerIngenieriaRequisitosTheme {
+        Greeting("Android")
     }
 }

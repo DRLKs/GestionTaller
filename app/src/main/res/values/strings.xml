@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">GestiónTaller-IngenieriaRequisitos</string>
+    <string name="MensajeBienvenida">¡Bienvenido a la aplicación!</string>
 </resources>

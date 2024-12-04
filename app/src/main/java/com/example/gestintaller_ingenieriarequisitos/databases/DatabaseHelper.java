@@ -1,6 +1,6 @@
 package com.example.gestintaller_ingenieriarequisitos.databases;
 
-import static com.example.gestintaller_ingenieriarequisitos.utils.Constants.*;
+import static com.example.gestintaller_ingenieriarequisitos.utils.Constants.ARCHIVO_INICIALIZACION_SQL;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
@@ -13,33 +13,34 @@ import java.io.InputStreamReader;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
+    // Nombre y versión de la base de datos
+    private static final String DATABASE_NAME = "MyDatabase.db";
     private static final int DATABASE_VERSION = 1;
-    private final Context context;
 
-
-    // Tablas
-    public static final String TABLE_USUARIO = "tUsuario";
-    public static final String TABLE_PIEZAS = "tPiezas";
-    public static final String TABLE_TIPOS = "tTipoPieza";
+    // Nombre de la tabla y columnas
+    public static final String TABLE_USERS = "users";
+    public static final String COLUMN_ID = "id";
+    public static final String COLUMN_USERNAME = "username";
+    public static final String COLUMN_PASSWORD = "password";
 
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
-        this.context = context;
     }
 
-    /*
-    * Función que crea la base de datos
-    */
+    // Crear la tabla de usuarios
     @Override
     public void onCreate(SQLiteDatabase db) {
-        ejecutarSQLDesdeArchivo(db, context);
+        String CREATE_TABLE = "CREATE TABLE " + TABLE_USERS + "("
+                + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + COLUMN_USERNAME + " TEXT NOT NULL, "
+                + COLUMN_PASSWORD + " TEXT NOT NULL)";
+        db.execSQL(CREATE_TABLE);
     }
 
+    // Actualizar la base de datos si se cambia la versión
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_USUARIO);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_PIEZAS);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_TIPOS);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_USERS);
         onCreate(db);
     }
 

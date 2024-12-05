@@ -17,31 +17,31 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "MyDatabase.db";
     private static final int DATABASE_VERSION = 1;
 
-    // Nombre de la tabla y columnas
-    public static final String TABLE_USERS = "users";
-    public static final String COLUMN_ID = "id";
-    public static final String COLUMN_USERNAME = "username";
-    public static final String COLUMN_PASSWORD = "password";
-
+    private final Context context;
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        this.context = context;
     }
 
     // Crear la tabla de usuarios
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String CREATE_TABLE = "CREATE TABLE " + TABLE_USERS + "("
-                + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-                + COLUMN_USERNAME + " TEXT NOT NULL, "
-                + COLUMN_PASSWORD + " TEXT NOT NULL)";
-        db.execSQL(CREATE_TABLE);
+        ejecutarSQLDesdeArchivo(db,context);
     }
 
     // Actualizar la base de datos si se cambia la versión
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_USERS);
+        dropAllTables(db);
         onCreate(db);
+    }
+
+    private void dropAllTables(SQLiteDatabase db){
+        db.execSQL("DROP TABLE IF EXISTS tUsuario");
+        db.execSQL("DROP TABLE IF EXISTS tRol");
+        db.execSQL("DROP TABLE IF EXISTS tPermiso");
+        db.execSQL("DROP TABLE IF EXISTS tPiezas");
+        db.execSQL("DROP TABLE IF EXISTS tTipoPieza");
     }
 
     private void ejecutarSQLDesdeArchivo(SQLiteDatabase db, Context context) {

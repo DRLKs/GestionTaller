@@ -1,52 +1,81 @@
 package com.example.gestintaller_ingenieriarequisitos.ui.login
 
-import android.app.Activity
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
+import android.content.Intent
 import android.os.Bundle
-import androidx.annotation.StringRes
-import androidx.appcompat.app.AppCompatActivity
-import android.text.Editable
-import android.text.TextWatcher
-import android.view.View
-import android.view.inputmethod.EditorInfo
+import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
-import com.example.gestintaller_ingenieriarequisitos.databinding.ActivityLoginBinding
-
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.widget.addTextChangedListener
+import com.example.gestintaller_ingenieriarequisitos.MainActivity
 import com.example.gestintaller_ingenieriarequisitos.R
+import com.example.gestintaller_ingenieriarequisitos.databases.DatabaseHelper
 
 class LoginActivity : AppCompatActivity() {
 
-    private lateinit var binding: ActivityLoginBinding
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_login) // Ajusta el nombre del layout si es diferente
 
-        binding = ActivityLoginBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        val usernameField: EditText = findViewById(R.id.username)
+        val passwordField: EditText = findViewById(R.id.password)
+        val loginButton: Button = findViewById(R.id.login)
+        val cancelButton: Button = findViewById(R.id.cancel)
 
-        val username = binding.username
-        val password = binding.password
-        val login = binding.login
-        val loading = binding.loading
+        // Instancia del helper de base de datos
+        val dbHelper = DatabaseHelper(this)
 
+        // Activar el botón solo si hay texto en ambos campos
+        usernameField.addTextChangedListener {
+            loginButton.isEnabled = usernameField.text.isNotEmpty() && passwordField.text.isNotEmpty()
+        }
+
+        passwordField.addTextChangedListener {
+            loginButton.isEnabled = usernameField.text.isNotEmpty() && passwordField.text.isNotEmpty()
+        }
+
+        // Acción del botón de inicio de sesión
+        loginButton.setOnClickListener {
+            val username = usernameField.text.toString()
+            val password = passwordField.text.toString()
+
+            val rolName = authenticateUser(dbHelper, username, password)
+
+            if (rolName != null) {
+                Toast.makeText(this, "Inicio de sesión exitoso", Toast.LENGTH_SHORT).show()
+                // Aquí puedes navegar a otra actividad o pantalla
+                val intent = Intent(this, MainActivity::class.java)
+                intent.putExtra("rolName", rolName)
+                startActivity(intent)
+                finish() // Opcional: Cierra la actividad de login
+            } else {
+                Toast.makeText(this, "Usuario o contraseña incorrectos", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        cancelButton.setOnClickListener {
+            // Cierra la aplicación
+            finishAffinity() // Cierra la actividad y todas las que estén en la pila
+        }
 
     }
 
-
     /**
-     * Extension function to simplify setting an afterTextChanged action to EditText components.
+     * Función para autenticar al usuario con la base de datos.
+     * Devuelve `rolName` si el usuario y la contraseña coinciden, de lo contrario, null.
      */
-    fun EditText.afterTextChanged(afterTextChanged: (String) -> Unit) {
-        this.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(editable: Editable?) {
-                afterTextChanged.invoke(editable.toString())
-            }
+    private fun authenticateUser(dbHelper: DatabaseHelper, username: String, password: String): String? {
 
-            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
+        val db = dbHelper.readableDatabase
+        val query = "SELECT rolName FROM tUsuario WHERE username = ? AND password = ?"
+        val cursor = db.rawQuery(query, arrayOf(username, password))
 
-            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
-        })
+        var rolName: String? = null
+        if (cursor.moveToFirst()) {
+            rolName = cursor.getString(cursor.getColumnIndexOrThrow("rolName"))
+        }
+        cursor.close()
+        db.close()
+        return rolName
     }
 }

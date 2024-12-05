@@ -1,0 +1,25 @@
+--
+-- Archivo generado con SQLiteStudio v3.4.4 el ju. dic. 5 15:45:30 2024
+--
+-- Codificación de texto usada: System
+--
+PRAGMA foreign_keys = off;
+BEGIN TRANSACTION;
+
+-- Tabla: tPermiso
+CREATE TABLE IF NOT EXISTS tPermiso (rolName TEXT PRIMARY KEY, acceso INTEGER, modificacion INTEGER, FOREIGN KEY (rolName) REFERENCES tRol (rolName));
+
+-- Tabla: tPiezas
+CREATE TABLE IF NOT EXISTS tPiezas (ID INTEGER PRIMARY KEY, NOMBRE TEXT, FABRICANTE TEXT, ID_TIPO TEXT, FOREIGN KEY (ID_TIPO) REFERENCES tTipoPieza (ID_TIPO));
+
+-- Tabla: tRol
+CREATE TABLE IF NOT EXISTS tRol (rolName TEXT PRIMARY KEY, rolDes TEXT, admin TEXT);
+
+-- Tabla: tTipoPieza
+CREATE TABLE IF NOT EXISTS tTipoPieza (ID_TIPO PRIMARY KEY, NOMBRE TEXT);
+
+-- Tabla: tUsuario
+CREATE TABLE IF NOT EXISTS tUsuario (NOMBRE TEXT PRIMARY KEY, PASSWORD TEXT, rolName TEXT, FOREIGN KEY (rolName) REFERENCES tRol (rolName));
+
+COMMIT TRANSACTION;
+PRAGMA foreign_keys = on;

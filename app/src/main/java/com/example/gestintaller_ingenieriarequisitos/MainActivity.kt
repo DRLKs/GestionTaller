@@ -1,45 +1,37 @@
 package com.example.gestintaller_ingenieriarequisitos
 
 import android.os.Bundle
-import android.widget.TextView
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
+import android.util.Log
+import android.view.View
+import android.widget.Button
+import android.widget.EditText
+import android.widget.ListView
+import android.widget.GridView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import com.example.gestintaller_ingenieriarequisitos.ui.theme.GestiónTallerIngenieriaRequisitosTheme
+import com.example.gestintaller_ingenieriarequisitos.databases.DatabaseHelper
 
 class MainActivity : AppCompatActivity() {
+
+    private lateinit var btnInsertar: Button
+    private lateinit var btnBorrar: Button
+    private lateinit var btnModificar: Button
+    private lateinit var btnLimpiar: Button
+    private lateinit var btnSalir: Button
+    private lateinit var etId: EditText
+    private lateinit var etNombre: EditText
+    private lateinit var etDescripcion: EditText
+    private lateinit var listTiposPiezas: ListView
+    private lateinit var gridPiezas: GridView
+    private lateinit var userRole: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        // Referencia al TextView para mostrar un mensaje de bienvenida
-        val welcomeMessage: TextView = findViewById(R.id.welcomeMessage)
-        welcomeMessage.text = "¡Bienvenido a la interfaz principal!"
-    }
-
-}
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    GestiónTallerIngenieriaRequisitosTheme {
-        Greeting("Android")
+        // Obtener el rol del usuario desde el Intent
+        userRole = intent.getStringExtra("rolName") ?: "Invitado"
+        Log.d("MainActivity", "Rol del usuario: $userRole")
     }
 }
+

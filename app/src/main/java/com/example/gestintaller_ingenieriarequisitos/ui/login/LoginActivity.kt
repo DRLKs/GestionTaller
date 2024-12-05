@@ -45,9 +45,9 @@ class LoginActivity : AppCompatActivity() {
                 Toast.makeText(this, "Inicio de sesión exitoso", Toast.LENGTH_SHORT).show()
                 // Aquí puedes navegar a otra actividad o pantalla
                 val intent = Intent(this, MainActivity::class.java)
-                intent.putExtra("rolName", rolName)
+                intent.putExtra("rolName", rolName) // Pasa el rol del usuario a la siguiente actividad
                 startActivity(intent)
-                finish() // Opcional: Cierra la actividad de login
+                finish()  // Cierra LoginActivity después de iniciar MainActivity
             } else {
                 Toast.makeText(this, "Usuario o contraseña incorrectos", Toast.LENGTH_SHORT).show()
             }
@@ -65,9 +65,8 @@ class LoginActivity : AppCompatActivity() {
      * Devuelve `rolName` si el usuario y la contraseña coinciden, de lo contrario, null.
      */
     private fun authenticateUser(dbHelper: DatabaseHelper, username: String, password: String): String? {
-
         val db = dbHelper.readableDatabase
-        val query = "SELECT rolName FROM tUsuario WHERE username = ? AND password = ?"
+        val query = "SELECT rolName FROM tUsuario WHERE nombre = ? AND password = ?"
         val cursor = db.rawQuery(query, arrayOf(username, password))
 
         var rolName: String? = null
@@ -78,4 +77,7 @@ class LoginActivity : AppCompatActivity() {
         db.close()
         return rolName
     }
+
 }
+
+

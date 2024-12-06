@@ -30,14 +30,14 @@
         android:id="@+id/etNombrePieza"
         android:layout_width="match_parent"
         android:layout_height="51dp"
-        android:hint="hint"
+        android:hint="Nombre de la Pieza"
         android:visibility="visible" />
 
     <com.google.android.material.textfield.TextInputEditText
         android:id="@+id/etFabricante"
         android:layout_width="match_parent"
         android:layout_height="53dp"
-        android:hint="hint" />
+        android:hint="Fabricante" />
 
     <Button
         android:id="@+id/btnInsertar"

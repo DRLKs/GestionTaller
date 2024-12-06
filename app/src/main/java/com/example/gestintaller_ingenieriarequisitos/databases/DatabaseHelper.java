@@ -63,6 +63,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     "('administrador', 'administrador', 1)," +
                     "('usuario', 'usuario', 0)," +
                     "('invitado', 'invitado', 0);");
+
             db.execSQL("INSERT INTO tTipoPieza (ID_TIPO, NOMBRE) VALUES" +
                     "('A', 'Chapa')," +
                     "('B', 'Motor')," +
@@ -71,10 +72,33 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     "('E', 'Cristales')," +
                     "('F', 'Pintura')," +
                     "('G', 'Otros');");
-            db.execSQL("INSERT INTO tPiezas (NOMBRE, FABRICANTE, ID_TIPO) VALUES" +
-                    "('PARAGOLPES DELANTERO NEGRO-LISO A IMPRIMAR', 'MAZDA', 'A')," +
-                    "('PARAGOLPES TRASERO-IMPRIMADO', 'MAZDA', 'A')," +
-                    "('REJILLA NEGRA', 'MAZDA', 'A');");
+
+        db.execSQL("INSERT INTO tPiezas (NOMBRE, FABRICANTE, ID_TIPO) VALUES" +
+                "('PARAGOLPES DELANTERO NEGRO-LISO A IMPRIMAR', 'MAZDA', 'A')," +
+                "('PARAGOLPES TRASERO-IMPRIMADO', 'MAZDA', 'A')," +
+                "('REJILLA NEGRA', 'MAZDA', 'A')," +
+                "('ALETA DELANTERA DCH CON AUJERO PARA PILOTO CX3 16', 'MAZDA', 'A')," +
+                "('ALETA DELANTERA IZQ CON AUJERO PARA PILOTO CX3 16', 'MAZDA', 'A')," +
+                "('Bombillas luz delantera', 'RENAULT', 'C')," +
+                "('Bombillas señalización delantera', 'RENAULT', 'C')," +
+                "('Bombillas luz trasera', 'RENAULT', 'C')," +
+                "('Bombillas señalización trasera', 'RENAULT', 'C')," +
+                "('Estuches de bombillas', 'RENAULT', 'C')," +
+                "('Iluminación LED', 'RENAULT', 'C')," +
+                "('Bombillas interior', 'RENAULT', 'C')," +
+                "('Bombillas Xenon', 'RENAULT', 'C')," +
+                "('Juntas y otras piezas del motor', 'FORD', 'B')," +
+                "('Alimentación', 'FORD', 'B')," +
+                "('Kits de distribución', 'FORD', 'B')," +
+                "('Correas', 'FORD', 'B')," +
+                "('Poleas', 'FORD', 'B')," +
+                "('Kits', 'FORD', 'B')," +
+                "('Válvulas EGR', 'FORD', 'B')," +
+                "('Herramienta específica', 'FORD', 'B')," +
+                "('Turbocompresores', 'FORD', 'B')," +
+                "('Sensores electrónicos y medidores de flujo', 'FORD', 'B')," +
+                "('Cable de acelerador y starter', 'FORD', 'B');");
+
             db.execSQL("INSERT INTO tUsuario (nombre, password, rolName) VALUES" +
                     "('admin', 'admin', 'administrador')," +
                     "('user', 'user', 'usuario')," +
@@ -113,32 +137,5 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS tPiezas");
         db.execSQL("DROP TABLE IF EXISTS tTipoPieza");
     }
-
-public boolean insertPieza(String nombre) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put("Nombre", nombre);
-        long result = db.insert("Piezas", null, values);
-        return result != -1;
-    }
-
-    public Cursor getAllPiezasByTipo(String tipo) {
-        SQLiteDatabase db = this.getReadableDatabase();
-        return db.rawQuery("SELECT * FROM Piezas WHERE Tipo = ?", new String[]{tipo});
-    }
-
-    public boolean deletePieza(int id) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        return db.delete("Piezas", "ID = ?", new String[]{String.valueOf(id)}) > 0;
-    }
-
-    public boolean updatePieza(int id, String nombre) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put("Nombre", nombre);
-        return db.update("Piezas", values, "ID = ?", new String[]{String.valueOf(id)}) > 0;
-    }
-
-    // Puedes agregar más métodos para manejar otras operaciones sobre las tablas de la base de datos.
 }
 

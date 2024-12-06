@@ -1,5 +1,6 @@
 package com.example.gestintaller_ingenieriarequisitos
 
+import android.content.ContentValues
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -19,6 +20,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var listTiposPiezas: ListView
     private lateinit var gridPiezas: GridView
     private lateinit var userRole: String
+    private var tipoSeleccionado : String = ""
     val dbHelper = DatabaseHelper(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -50,7 +52,7 @@ class MainActivity : AppCompatActivity() {
         listTiposPiezas.adapter = adapter
 
         listTiposPiezas.setOnItemClickListener { _, _, position, _ ->
-            val tipoSeleccionado = tipos[position]
+            tipoSeleccionado = tipos[position].toString()
             val tipoCodigo = obtenerCodigoDeTipo(tipoSeleccionado)
             Log.d("MainActivity", "Tipo seleccionado: $tipoSeleccionado con código: $tipoCodigo") // Verificar valor seleccionado
             cargarPiezasPorTipo(tipoCodigo) // Cargar las piezas del tipo seleccionado usando el código
@@ -71,7 +73,7 @@ class MainActivity : AppCompatActivity() {
         btnLimpiar.setOnClickListener {
             etNombrePieza.text.clear()
             etFabricante.text.clear()
-            gridPiezas.clearChoices()
+            gridPiezas.adapter = null
             listTiposPiezas.clearChoices()
         }
 
@@ -166,7 +168,45 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun insertarPieza() {
+        val nombrePieza = etNombrePieza.text.toString().trim()
+        val fabricante = etFabricante.text.toString().trim()
 
+        // Verificar que los campos no estén vacíos
+        if (nombrePieza.isEmpty() || fabricante.isEmpty() || tipoSeleccionado.isEmpty()) {
+            Toast.makeText(this, "Por favor, completa todos los campos.", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        // Obtener el código del tipo de pieza usando el nombre del tipo
+        val tipoCodigo = obtenerCodigoDeTipo(tipoSeleccionado)
+        if (tipoCodigo.isEmpty()) {
+            Toast.makeText(this, "El tipo de pieza seleccionado no es válido.", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        // Insertar la nueva pieza en la base de datos
+        val db = dbHelper.writableDatabase
+        val values = ContentValues().apply {
+            put("NOMBRE", nombrePieza)
+            put("FABRICANTE", fabricante)
+            put("ID_TIPO", tipoCodigo)
+        }
+
+        // Realizar la inserción
+        val newRowId = db.insert("tPiezas", null, values)
+        db.close()
+
+        if (newRowId != -1L) {
+            Toast.makeText(this, "Pieza insertada con éxito.", Toast.LENGTH_SHORT).show()
+            // Limpiar los campos de texto
+            etNombrePieza.text.clear()
+            etFabricante.text.clear()
+
+            // Actualizar el GridView para mostrar la nueva pieza
+            cargarPiezasPorTipo(tipoCodigo)
+        } else {
+            Toast.makeText(this, "Error al insertar la pieza.", Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun borrarPieza() {

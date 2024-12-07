@@ -1,16 +1,8 @@
 package com.example.gestintaller_ingenieriarequisitos.databases;
 
-import android.content.ContentValues;
 import android.content.Context;
-import android.database.Cursor;
-import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
@@ -18,11 +10,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "TrabajoGI2425.db";
     private static final int DATABASE_VERSION = 1;
 
-    private Context context;
-
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
-        this.context = context;
     }
 
     @Override
@@ -104,24 +93,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     "('user', 'user', 'usuario')," +
                     "('inv', 'inv', 'invitado');");
         }
-
-    private void executeSqlScript(SQLiteDatabase db, String scriptName) throws IOException {
-        InputStream inputStream = context.getAssets().open(scriptName);
-        BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-        StringBuilder sqlScript = new StringBuilder();
-        String line;
-
-        while ((line = reader.readLine()) != null) {
-            sqlScript.append(line).append("\n");
-        }
-        reader.close();
-
-        try {
-            db.execSQL(sqlScript.toString());
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {

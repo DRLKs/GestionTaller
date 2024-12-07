@@ -3,7 +3,6 @@ package com.example.gestintaller_ingenieriarequisitos
 import android.content.ContentValues
 import android.os.Bundle
 import android.util.Log
-import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import com.example.gestintaller_ingenieriarequisitos.databases.DatabaseHelper
@@ -22,7 +21,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var userRole: String
     private var tipoSeleccionado : String = ""
     private var piezaSeleccionadaId: Int? = null
-    val dbHelper = DatabaseHelper(this)
+    private val dbHelper = DatabaseHelper(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,7 +52,7 @@ class MainActivity : AppCompatActivity() {
         listTiposPiezas.adapter = adapter
 
         listTiposPiezas.setOnItemClickListener { _, _, position, _ ->
-            tipoSeleccionado = tipos[position].toString()
+            tipoSeleccionado = tipos[position]
             val tipoCodigo = obtenerCodigoDeTipo(tipoSeleccionado)
             Log.d("MainActivity", "Tipo seleccionado: $tipoSeleccionado con código: $tipoCodigo") // Verificar valor seleccionado
             cargarPiezasPorTipo(tipoCodigo) // Cargar las piezas del tipo seleccionado usando el código
@@ -294,24 +293,7 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    private fun obtenerPiezaPorNombreYFabricante(nombre: String, fabricante: String, tipo: String): Pieza? {
-        val db = dbHelper.readableDatabase
-        val query = "SELECT ID, NOMBRE, FABRICANTE, ID_TIPO FROM tPiezas WHERE NOMBRE = ? AND FABRICANTE = ? AND ID_TIPO = ?"
-        val cursor = db.rawQuery(query, arrayOf(nombre, fabricante, tipo))
 
-        var pieza: Pieza? = null
-        if (cursor.moveToFirst()) {
-            val id = cursor.getInt(cursor.getColumnIndexOrThrow("ID"))
-            val nombre = cursor.getString(cursor.getColumnIndexOrThrow("NOMBRE"))
-            val fabricante = cursor.getString(cursor.getColumnIndexOrThrow("FABRICANTE"))
-            val idTipo = cursor.getString(cursor.getColumnIndexOrThrow("ID_TIPO"))
-            pieza = Pieza(id, nombre, fabricante, idTipo)
-        }
-
-        cursor.close()
-        db.close()
-        return pieza
-    }
 
 
     // Clase de datos para las piezas

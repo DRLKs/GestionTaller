@@ -9,7 +9,7 @@
         android:id="@+id/textView2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Materia" />
+        android:text="@string/TextBoxMateria_ActivityMain" />
 
     <ListView
         android:id="@+id/listTiposPiezas"
@@ -30,44 +30,44 @@
         android:id="@+id/etNombrePieza"
         android:layout_width="match_parent"
         android:layout_height="51dp"
-        android:hint="Nombre de la Pieza"
+        android:hint="@string/TextBoxNombrePieza_ActivityMain"
         android:visibility="visible" />
 
     <com.google.android.material.textfield.TextInputEditText
         android:id="@+id/etFabricante"
         android:layout_width="match_parent"
         android:layout_height="53dp"
-        android:hint="Fabricante" />
+        android:hint="@string/fabricante_TextBoxFabricante_ActivityMain" />
 
     <Button
         android:id="@+id/btnInsertar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Insertar" />
+        android:text="@string/insertar_botonInsertar_ActivityMain" />
 
     <Button
         android:id="@+id/btnBorrar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Borrar" />
+        android:text="@string/borrar_botonBorrar_ActivityMain" />
 
     <Button
         android:id="@+id/btnActualizar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Actualizar" />
+        android:text="@string/actualizar_botonActualizar_ActivityMain" />
 
     <Button
         android:id="@+id/button5"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Limpiar" />
+        android:text="@string/limpiar_botonLimpiar_ActivityMain" />
 
     <Button
         android:id="@+id/btnSalir"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Salir" />
+        android:text="@string/salir_botonSalir_ActivityMain" />
 
     <!-- Aquí puedes agregar más widgets o vistas para la funcionalidad principal -->
 </LinearLayout>

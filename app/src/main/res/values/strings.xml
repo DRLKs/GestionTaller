@@ -12,4 +12,12 @@
     <string name="login_failed">"Login failed"</string>
     <string name="title_activity_login">LoginActivity</string>
     <string name="cancel_button_text">Cancel</string>
+    <string name="actualizar_botonActualizar_ActivityMain">Actualizar</string>
+    <string name="borrar_botonBorrar_ActivityMain">Borrar</string>
+    <string name="insertar_botonInsertar_ActivityMain">Insertar</string>
+    <string name="salir_botonSalir_ActivityMain">Salir</string>
+    <string name="limpiar_botonLimpiar_ActivityMain">Limpiar</string>
+    <string name="fabricante_TextBoxFabricante_ActivityMain">Fabricante</string>
+    <string name="TextBoxNombrePieza_ActivityMain">Nombre de la Pieza</string>
+    <string name="TextBoxMateria_ActivityMain">Materia</string>
 </resources>

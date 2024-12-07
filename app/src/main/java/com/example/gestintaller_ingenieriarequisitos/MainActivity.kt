@@ -21,6 +21,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var gridPiezas: GridView
     private lateinit var userRole: String
     private var tipoSeleccionado : String = ""
+    private var piezaSeleccionadaId: Int? = null
     val dbHelper = DatabaseHelper(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -151,7 +152,9 @@ class MainActivity : AppCompatActivity() {
     private fun cargarDatosPieza(pieza: Pieza) {
         etNombrePieza.setText(pieza.nombre)
         etFabricante.setText(pieza.fabricante)
+        piezaSeleccionadaId = pieza.id
     }
+
 
     private fun cargarPiezasPorTipo(tipo: String) {
         Log.d("MainActivity", "Tipo seleccionado: $tipo") // Agregar log para verificar el valor
@@ -209,13 +212,107 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun borrarPieza() {
+// Dentro de la clase MainActivity
 
+    private fun borrarPieza() {
+        val nombrePieza = etNombrePieza.text.toString().trim()
+        val fabricante = etFabricante.text.toString().trim()
+
+        // Verificar que los campos no estén vacíos
+        if (nombrePieza.isEmpty() || fabricante.isEmpty() || tipoSeleccionado.isEmpty()) {
+            Toast.makeText(this, "Por favor, selecciona una pieza para borrar.", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        // Obtener el código del tipo de pieza usando el nombre del tipo
+        val tipoCodigo = obtenerCodigoDeTipo(tipoSeleccionado)
+        if (tipoCodigo.isEmpty()) {
+            Toast.makeText(this, "El tipo de pieza seleccionado no es válido.", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        // Borrar la pieza de la base de datos
+        val db = dbHelper.writableDatabase
+        val selection = "NOMBRE = ? AND FABRICANTE = ? AND ID_TIPO = ?"
+        val selectionArgs = arrayOf(nombrePieza, fabricante, tipoCodigo)
+
+        val deletedRows = db.delete("tPiezas", selection, selectionArgs)
+        db.close()
+
+        if (deletedRows > 0) {
+            Toast.makeText(this, "Pieza borrada con éxito.", Toast.LENGTH_SHORT).show()
+            // Limpiar los campos de texto
+            etNombrePieza.text.clear()
+            etFabricante.text.clear()
+
+            // Actualizar el GridView para mostrar la pieza eliminada
+            cargarPiezasPorTipo(tipoCodigo)
+        } else {
+            Toast.makeText(this, "Error al borrar la pieza.", Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun modificarPieza() {
+        val nombrePieza = etNombrePieza.text.toString().trim()
+        val fabricante = etFabricante.text.toString().trim()
 
+        // Verificar que los campos no estén vacíos
+        if (nombrePieza.isEmpty() || fabricante.isEmpty() || piezaSeleccionadaId == null) {
+            Toast.makeText(this, "Por favor, selecciona una pieza y completa todos los campos.", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        // Actualizar la pieza en la base de datos
+        val db = dbHelper.writableDatabase
+        val values = ContentValues().apply {
+            put("NOMBRE", nombrePieza)
+            put("FABRICANTE", fabricante)
+        }
+        val selection = "ID = ?"
+        val selectionArgs = arrayOf(piezaSeleccionadaId.toString())
+
+        val count = db.update(
+            "tPiezas",
+            values,
+            selection,
+            selectionArgs
+        )
+        db.close()
+
+        if (count > 0) {
+            Toast.makeText(this, "Pieza modificada con éxito.", Toast.LENGTH_SHORT).show()
+            // Limpiar los campos de texto
+            etNombrePieza.text.clear()
+            etFabricante.text.clear()
+            piezaSeleccionadaId = null
+
+            // Actualizar el GridView para mostrar la pieza modificada
+            cargarPiezasPorTipo(obtenerCodigoDeTipo(tipoSeleccionado))
+        } else {
+            Toast.makeText(this, "Error al modificar la pieza.", Toast.LENGTH_SHORT).show()
+        }
     }
+
+
+    private fun obtenerPiezaPorNombreYFabricante(nombre: String, fabricante: String, tipo: String): Pieza? {
+        val db = dbHelper.readableDatabase
+        val query = "SELECT ID, NOMBRE, FABRICANTE, ID_TIPO FROM tPiezas WHERE NOMBRE = ? AND FABRICANTE = ? AND ID_TIPO = ?"
+        val cursor = db.rawQuery(query, arrayOf(nombre, fabricante, tipo))
+
+        var pieza: Pieza? = null
+        if (cursor.moveToFirst()) {
+            val id = cursor.getInt(cursor.getColumnIndexOrThrow("ID"))
+            val nombre = cursor.getString(cursor.getColumnIndexOrThrow("NOMBRE"))
+            val fabricante = cursor.getString(cursor.getColumnIndexOrThrow("FABRICANTE"))
+            val idTipo = cursor.getString(cursor.getColumnIndexOrThrow("ID_TIPO"))
+            pieza = Pieza(id, nombre, fabricante, idTipo)
+        }
+
+        cursor.close()
+        db.close()
+        return pieza
+    }
+
 
     // Clase de datos para las piezas
     data class Pieza(

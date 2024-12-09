@@ -23,12 +23,16 @@ class MainActivity : AppCompatActivity() {
     private var piezaSeleccionadaId: Int? = null
     private val dbHelper = DatabaseHelper(this)
 
+    @Suppress("NAME_SHADOWING")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         // Obtener el rol del usuario desde el Intent
-        userRole = intent.getStringExtra("rolName") ?: "Invitado"
+        userRole = intent.getStringExtra("rolName") ?: ""
+        if( userRole == "" ){
+            throw Exception("Fallo en la obtención del rol")
+        }
         Log.d("MainActivity", "Rol del usuario: $userRole")
 
         // Inicialización de vistas
@@ -52,10 +56,14 @@ class MainActivity : AppCompatActivity() {
         listTiposPiezas.adapter = adapter
 
         listTiposPiezas.setOnItemClickListener { _, _, position, _ ->
-            tipoSeleccionado = tipos[position]
-            val tipoCodigo = obtenerCodigoDeTipo(tipoSeleccionado)
-            Log.d("MainActivity", "Tipo seleccionado: $tipoSeleccionado con código: $tipoCodigo") // Verificar valor seleccionado
-            cargarPiezasPorTipo(tipoCodigo) // Cargar las piezas del tipo seleccionado usando el código
+            if (userRole != "invitado"){
+                tipoSeleccionado = tipos[position]
+                val tipoCodigo = obtenerCodigoDeTipo(tipoSeleccionado)
+                Log.d("MainActivity", "Tipo seleccionado: $tipoSeleccionado con código: $tipoCodigo") // Verificar valor seleccionado
+                cargarPiezasPorTipo(tipoCodigo) // Cargar las piezas del tipo seleccionado usando el código
+            }else{
+                Toast.makeText(this, "No tienes suficientes privilegios.", Toast.LENGTH_SHORT).show()
+            }
         }
 
         gridPiezas.setOnItemClickListener { _, _, position, _ ->
